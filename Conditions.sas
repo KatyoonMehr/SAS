@@ -1,6 +1,5 @@
 
 /* IF - ELSE IF - THEN */
-/* DO - END */
 /* WHERE */
 
 DATA empdat;
@@ -118,28 +117,6 @@ IF 40 < age <= 50 THEN agegroup=1;
 ELSE IF 50 < age <= 60 THEN agegroup=2;
 ELSE IF age > 60 THEN agegroup=3;
 PUT agegroup=;
-RUN;
-
-
-
-* Loop - DO / END;
-DATA xx;
-	DO i=1 TO 10;
-			c = sqrt(i);
-		OUTPUT;
-	END;
-RUN;
-PROC PRINT DATA = xx NOOBS;
-RUN;
-
-
-DATA distance;
-	DO miles = 1 TO 20;
-			kilometers = miles * 1.61;
-		OUTPUT;
-	END;
-RUN;
-PROC PRINT DATA = distance;
 RUN;
 
 
