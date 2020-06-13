@@ -1,6 +1,7 @@
 
 * SAS Basics;
 * Data Entry;
+* Array;
 
 
 
@@ -180,7 +181,7 @@ RUN;
 PROC PRINT DATA = demo_7;
 	VAR id gender dob;
 	FORMAT dob date9.;
-	/* date9. – 31Dec1965*/
+	/* date9. â€“ 31Dec1965*/
 RUN;
 
 PROC PRINT DATA = demo_7;
@@ -240,4 +241,57 @@ RUN;
 PROC PRINT DATA = Special;
 RUN;
 
+
+
+Arrays;
+
+DATA arr_test1;
+INPUT x1 x2 x3 x4 x5 x6 x7;
+ARRAY f(7) X1 X2 X3 X4 X5 X6 X7;
+DO i = 1 TO 7;
+	IF f(i) = 9 THEN f(i) = .;
+END;
+DROP i;
+
+DATALINES;
+1 2 2 1 3 2 1
+1 1 9 2 1 1 9
+2 4 1 9 0 9 3
+1 2 2 2 9 4 1
+1 1 1 2 1 2 4
+; 
+RUN;
+
+
+Data arr_test2;
+INPUT x1 - x7;
+ARRAY X(*) X1 - X7;
+DO i = 1 TO DIM(X);
+	IF x(i) = 9 THEN X(i) = .;
+END;
+DROP i;
+CARDS;
+1 2 2 1 3 2 1
+1 1 9 2 1 1 9
+2 4 1 9 0 9 3
+1 2 2 2 9 4 1
+1 1 1 2 1 2 4
+; 
+RUN;
+
+
+DATA arr_test3;
+INPUT x1 - x7;
+ARRAY X X1 - X7;
+DO OVER x;
+	IF x = 9 THEN X = .;
+END;
+CARDS;
+1 2 2 1 3 2 1
+1 1 9 2 1 1 9
+2 4 1 9 0 9 3
+1 2 2 2 9 4 1
+1 1 1 2 1 2 4
+; 
+RUN;
 
