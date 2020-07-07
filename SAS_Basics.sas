@@ -1,4 +1,5 @@
 
+
 * SAS Basics;
 * Data Entry;
 * Array;
@@ -6,8 +7,8 @@
 
 
 DATA demo_1;
- INPUT id $ height weight gender $ age;
- *Wight_1=weight*0.45;
+INPUT id $ height weight gender $ age;
+Weight_1=weight*0.45;
 DATALINES;
 001 68 144 M 23
 002 78 202 M 34
@@ -17,10 +18,12 @@ DATALINES;
 RUN;
 PROC CONTENTS DATA = work.demo_1;
 RUN;
+PROC PRINT DATA= demo_1;
+RUN;
 
 
 DATA demo_2;
-	INPUT id $ height weight gender $ age;
+INPUT id $ height weight gender $ age;
 DATALINES;
 001 68 144 M 23 99999
 002 78          202 M 34
@@ -29,8 +32,9 @@ RUN;
 PROC PRINT DATA = demo_2;
 RUN;
 
+
 DATA demo_3; *Problem-Second record won't be shown;
-	INPUT id $ height weight gender $ age;
+INPUT id $ height weight gender $ age;
 DATALINES;
 001 68 144 M 23 002
 78 202 M 34
@@ -41,7 +45,7 @@ RUN;
 
 
 DATA demo_4; *Problem-Second record won't be shown;
-	INPUT id $ height weight gender $ age;
+INPUT id $ height weight gender $ age;
 DATALINES;
 001 68 144 M 23
 002 78 202 M 34;
@@ -52,14 +56,16 @@ RUN;
 
 *Length Statement;
 DATA demo_5;
-	LENGTH id $3 gender $1 height 3;
-	INPUT id height weight gender age;
+LENGTH id $3 gender $1 height 3;
+INPUT id height weight gender age;
 DATALINES;
 001 68 144 M 23
 002 78 202 M 34
 ;
 RUN;
 PROC CONTENTS DATA = demo_5;
+RUN;
+PROC PRINT DATA = demo_5;
 RUN;
 
 
@@ -87,7 +93,7 @@ RUN;
 PROC CONTENTS DATA = demo_7;
 RUN;
 PROC PRINT DATA = demo_7;
-FORMAT dob mmddyy.;
+FORMAT dob mmddyy10.;
 RUN;
 
 
@@ -124,22 +130,27 @@ RUN;
 PROC PRINT DATA = demo_9;
 RUN;
 
+
 * Reading an external file;
 DATA participants; 
-INFILE 'C:\Users\tjaber\Desktop\SAS Fundamental_Final\Examples\participant.csv' DLM= ',' FIRSTOBS=1;
-LENGTH ID $10 Date $10 DOB $10 SEX $1;
+INFILE 'C:\Users\Rayan\Desktop\Kati\Data Science\SASFile\participant.csv' DLM= ',' FIRSTOBS=2;
+LENGTH ID 6 Date $10 DOB $10 SEX $1;
 INPUT ID  Date  DOB  SEX  PAID;
  *KEEP ID SEX PAID;
 RUN;
+PROC PRINT DATA=participants;
+RUN;
+
 
 *PROC IMPORT;
-PROC IMPORT DATAFILE='C:\Users\tjaber\Desktop\SAS Fundamental_Final\Examples\participant.csv'
-OUT = participants = (ID = ID2 Gender = Sex))
+PROC IMPORT DATAFILE='C:\Users\Rayan\Desktop\Kati\Data Science\SASFile\participant.csv'
+OUT = participants 
 DBMS=CSV
 REPLACE;
 GUESSINGROWS= 100;
 GETNAMES=YES;
 RUN;
+
 
 *PROC PRINT;
 PROC PRINT DATA = demo_1;
@@ -147,10 +158,10 @@ PROC PRINT DATA = demo_1;
 RUN;
 
 *Procedure Options;
-Proc print data =demo_10 noobs label;
-	var id gender dob;
-	label dob='Date of birth';
-Run;
+PROC PRINT DATA = participants NOOBS LABEL;
+	VAR ID Sex DOB;
+	LABEL DOB='Date of Birth';
+RUN;
 
 *Restriction to observations;
 PROC PRINT DATA = demo_1(OBS=3);
@@ -165,6 +176,9 @@ RUN;
 
 
 *BY statement (Group value), Sort first;
+PROC SORT DATA = demo_1;
+BY gender;
+RUN;
 PROC PRINT DATA = demo_1;
 	VAR id gender age;
  	BY gender;
@@ -188,9 +202,11 @@ PROC PRINT DATA = demo_7;
 	TITLE 'This is an example';
 	FOOTNOTE 'helloooooooooo';
 RUN;
+TITLE;
+FOOTNOTE;
 
 DATA test;
-	INPUT id age income;
+INPUT id age income;
 DATALINES;
 001 50 50000
 002 40 40000
@@ -200,30 +216,33 @@ DATALINES;
 ;
 RUN;
 
-PROC SORT DATA = test;
-	BY id;
-	*By DESCENDING id;
-RUN;
-
-PROC SORT DATA = test OUT=test2 NODUPKEY;
+PROC SORT DATA = test OUT=test_sorted NODUPKEY;
 	BY DESCENDING id;
 RUN;
+PROC PRINT DATA = test_sorted;
+RUN;
 
-PROC SORT DATA = test OUT=test2 NODUPKEY DUPOU = option;
+PROC SORT DATA = test OUT=test_2 NODUPKEY DUPOU = option;
 	BY id;
 RUN;
-PROC PRINT DATA = test2;
+PROC PRINT DATA = test_2;
 RUN;
-
 
 
 DATA person;
    INFILE DATALINES DELIMITER = ','; 
-   INPUT name $ dept $;
+   INPUT name $ dept $ salary;
    DATALINES;                      
-John,Sales
-Mary,Acctng
+John,Sales,33000
+Mary,Accounting,35000
+Raza,Accounting,37000
+Stephanie,HR,28000
+Mohammad,IT,45000
+Rayan,Data,40000
+Kati,Data,40000
 ;
+RUN;
+PROC PRINT DATA = person;
 RUN;
 
 
@@ -236,14 +255,14 @@ DATA Special;
 	4  ,   5  ,   GOODBYE ,  6 
 	7,,"HI THERE",8 
 	9,10,"HI,THERE",11 
+	12,,,6
 ; 
 RUN;
 PROC PRINT DATA = Special;
 RUN;
 
 
-
-Arrays;
+*Arrays;
 
 DATA arr_test1;
 INPUT x1 x2 x3 x4 x5 x6 x7;
@@ -294,4 +313,3 @@ CARDS;
 1 1 1 2 1 2 4
 ; 
 RUN;
-
