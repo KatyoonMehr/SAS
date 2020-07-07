@@ -1,10 +1,10 @@
-# SAS Basic:
+## SAS Basic:
 - Different way to enter data (INPUT, LENGTH, INFORMAT),
 - Read Ecternal file (PROC IMPORT, INFILE)
 - Array
 - PROC PRINT, PROC SORT, PROC CONTENT
 
-# Functions:
+## Functions:
 SUM(OF ), N, NMISS, MEAN, ROUND, INT, CEIL, FLOOR, UPCASE, LOWCASE, PROPCASE, LEFT, RIGHT, SUBSTR, SCAN, COMPBL
 COMPRESS (Removes all the spaces)
 TRIM (Removes space from the end)
