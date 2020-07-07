@@ -1,5 +1,5 @@
 *Functions
-- SUM(OF 
+- SUM(OF )
 - N
 - NMISS
 - MEAN
@@ -7,8 +7,6 @@
 - INT
 - CEIL
 - FLOOR
-- COMPBL
-- COMPRESS
 - UPCASE
 - LOWCASE
 - PROPCASE
@@ -16,13 +14,15 @@
 - RIGHT
 - SUBSTR
 - SCAN
-- TRIM
-- STRIP
+- COMPBL
+- COMPRESS (Removes all the spaces)
+- TRIM (Removes space from the end)
+- STRIP (Removes space from the begining and end)
 
 - TODAY()
 - MDY
-- URDIF
-- "date"D, "time"T, "datetime"DT
+- YRDIF
+- Contant time: "date"D, "time"T, "datetime"DT
 - YEAR
 - QTR
 - MONTH
@@ -105,16 +105,16 @@ RUN;
 
 *Character Functions;
 DATA _NULL_;
-Full_name = 'Ar    Kar    Min';
+Full_name = 'Kati    S.     Mehr';
 New_name = COMPBL(full_name);
 PUT _ALL_;
 RUN;
 
 
 DATA _NULL_;
-Full_name = 'Ar    Kar    Min';
+Full_name = 'Kati    S.     Mehr';
 New_name = COMPRESS(full_name);
-Address="2000 Eglinton-Ave. Mississauga L5J'4L0";
+Address="40 Eglinton-Ave. E, Toronto, M4P3A2";
 New_add = COMPRESS(address,",.-");
 PUT _ALL_;
 RUN;
@@ -122,7 +122,7 @@ RUN;
 
 DATA test1;
 INPUT name $5. +4 gender $1. age height weight;
-gender_up = UPCASE(gender);   *lowcase;
+gender_up = UPCASE(gender);   *LOWCASE;
 CARDS;
 Alice    f    10   61   97
 Beth     f    11   64   105
@@ -145,13 +145,13 @@ RUN;
 
 DATA _NULL_;
 
-Last_name = 'goodnight';
-Test_1 = SUBSTR(last_name,1,3);
-Test_2 = SUBSTR(last_name,1,1);
-Test_3 = SUBSTR(last_name,1);
+Last_name = 'good night';
+Last_1 = SUBSTR(last_name,1,3);
+Last_2 = SUBSTR(last_name,1,1);
+Last_3 = SUBSTR(last_name,1);
 
 Address_1 = '2000 Eglinton Ave. Mississauga Ontario L5J4L0';
-Address_2 = '2000, Eglinton Ave., Mississauga, Ontario L5J4L0';
+Address_2 = '2000, Eglinton Ave., Mississauga, Ontario, L5J4L0';
 Num_1 = SCAN(address_1,1);
 Num_2 = SCAN(address_2,1,',');
 Street_name_1 = SCAN(address_1,2);
@@ -160,8 +160,9 @@ Street_name_2 = SCAN(address_2,2,',');
 PUT _ALL_;
 RUN;
 
+
 * || is concatenate;
-DATA scan;
+DATA _ NULL_;
 full_name = 'Stephen Goodnight    ';
 name1 = TRIM(full_name) || "**";
 name2 = full_name || "**";
@@ -209,6 +210,10 @@ DATA WineRanking;
 	  Sterling Prosecco 72 06/30/2012
 	;
 RUN;
+PROC PRINT DATA = WineRanking;
+VAR company type score date;
+RUN;
+
 
 
 *Yearcutoff;
@@ -217,7 +222,8 @@ specifies the first year of the 100-year span.
 Range: 1582-1990
 Default: 1920
 */
-options yearcutoff=1920; *1820;
+
+OPTIONS YEARCUTOFF = 1920; *1820;
 
 
 DATA yearcut;
@@ -265,20 +271,21 @@ current_age = INT (YRDIF(bday, TODAY()));
 PUT current_age=;
 RUN;
 
+
 DATA _NULL_;
-Age1 = INT((today()-'11JUN78'd)/365.25);
+Age1 = INT((today()-'11JUN78'D)/365.25);
 Age2 = INT((today()- MDY(06,11,78))/365.25);
 PUT (age1 age2)(=);
 RUN;
 
 
 DATA _NULL_;
-tod = TODAY();
-Y = YEAR(tod);
-Q = QTR(tod);
-M = MONTH(tod);
-D = DAY(tod);
-W = WEEKDAY(tod);
+today = TODAY();
+Y = YEAR(today);
+Q = QTR(today);
+M = MONTH(today);
+D = DAY(today);
+W = WEEKDAY(today);
 PUT _ALL_;
 RUN;
 
@@ -286,6 +293,7 @@ RUN;
 DATA _NULL_;
 dob = "11JUN1978"D;
 Years = INTCK('year',dob,today());
+Diff_Y = YEAR(TODAY())-YEAR(dob);
 quarters = INTCK('qtr',dob,today());
 months = INTCK('month',dob,today());
 weeks = INTCK('week',dob,today());
@@ -295,14 +303,14 @@ RUN;
 
 
 DATA _NULL_;
-date1 = INTNX('month','01jan95'd,5,'beginning');
+date1 = INTNX('month','01jJAN95'D,5,'beginning');
 PUT date1;
 PUT date1 date7.;
 RUN;
 
 /* Alignments:
 s- same day
-b- begining
+b- beginning
 m- middle
 e- end */
 
