@@ -5,8 +5,8 @@
 - MEAN
 - ROUND
 - INT
-- CEIL
-- FLOOR
+- CEIL (Returns the smallest integer that is greater than or equal to the argument)
+- FLOOR (Returns the largest integer that is less than or equal to the argument)
 - UPCASE
 - LOWCASE
 - PROPCASE
@@ -14,7 +14,7 @@
 - RIGHT
 - SUBSTR
 - SCAN
-- COMPBL
+- COMPBL (Removes extra spaces just keeps one blank in between)
 - COMPRESS (Removes all the spaces)
 - TRIM (Removes space from the end)
 - STRIP (Removes space from the begining and end)
