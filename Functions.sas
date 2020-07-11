@@ -13,23 +13,24 @@
 - LEFT 
 - RIGHT
 - SUBSTR
-- SCAN
+- SCAN (Extracts words within a value that is marked by delimiters)
 - COMPBL (Removes extra spaces just keeps one blank in between)
 - COMPRESS (Removes all the spaces)
 - TRIM (Removes space from the end)
 - STRIP (Removes space from the begining and end)
 
 - TODAY()
-- MDY
-- YRDIF
+- MDY (Converts MONTH, DAY, and YEAR values to a SAS date value)
+- YRDIF (Returns the difference in years between two dates)
 - Contant time: "date"D, "time"T, "datetime"DT
 - YEAR
 - QTR
 - MONTH
 - DAY
 - WEEKDAY
-- INTCK
-- INTNX;
+- INTCK (Returns the number of time units between two dates) 
+- INTNX (Returns a SAS date value by adding a specific number of increments to an initial start date)
+
 
 
 DATA _NULL_; *data value;
