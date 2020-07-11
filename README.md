@@ -14,3 +14,5 @@ Date Functions: TODAY(), MDY, YRDIF, YEAR, QTR, MONTH, DAY, WEEKDAY, INTCK, INTN
 Contant time: "date"D, "time"T, "datetime"DT
 OPTIONS YEARCUTOFF = 1920
 
+## Keep and Drop
+How to use KEEP and DROP statements and KEEP= and DROP= options efficiently.
