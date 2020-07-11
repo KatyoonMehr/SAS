@@ -304,7 +304,7 @@ RUN;
 
 
 DATA _NULL_;
-date1 = INTNX('month','01jJAN95'D,5,'beginning');
+date1 = INTNX('month','01JAN95'D,5,'beginning');
 PUT date1;
 PUT date1 date7.;
 RUN;
