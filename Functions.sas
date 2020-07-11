@@ -304,9 +304,12 @@ RUN;
 
 
 DATA _NULL_;
-date1 = INTNX('month','01JAN95'D,5,'beginning');
+date1 = INTNX('month',"11JUN78"D,5,'beginning');
+date2 = INTNX ('day', "11JUN78"D, 250 , 'middle');
 PUT date1;
-PUT date1 date7.;
+PUT date2;
+PUT date1 date9.;
+PUT date2 date7.;
 RUN;
 
 /* Alignments:
