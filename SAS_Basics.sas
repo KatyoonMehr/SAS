@@ -142,6 +142,19 @@ PROC PRINT DATA=participants;
 RUN;
 
 
+DATA Gardener;
+INFILE 'C:\Users\Administrator\Desktop\KatiSAS\Gardener.txt' DLM=',' FIRSTOBS=2;
+INPUT Name $ Tomatos Zucchinis Peas Grapes;
+Zone = 14;
+Type = 'Home';
+Total1 = Tomatos+Zucchinis+Peas+Grapes;
+Total2 = SUM(Tomatos, Zucchinis, Peas, Grapes);
+PerTom = (Tomatos/Total2)*100;
+RUN;
+PROC PRINT DATA=Gardener;
+RUN;
+
+
 *PROC IMPORT;
 PROC IMPORT DATAFILE='C:\Users\Rayan\Desktop\Kati\Data Science\SASFile\participant.csv'
 OUT = participants 
