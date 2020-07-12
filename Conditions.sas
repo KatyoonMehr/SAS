@@ -1,18 +1,17 @@
+
 *IF - ELSE IF - THEN;
 *WHERE;
 *Grouping Observations with IF-THEN DO-END Statements;
-*DO TO BY OUTPUT END;
-*DO WHILE;
-*DO UNTIL;
-*RETAIN;
+*DO TO BY   OUTPUT END;
+*DO WHILE   OUTPUT END;
+*DO UNTIL   OUTPUT END;
+*RETAIN (copies retaining values by telling the SAS not to reset the variables 
+		 to missing at the beginning of each iteration of the DATA step)
 *First. and Last. Indicators;
 
-
 DATA empdat;
-INPUT  empid empname $ salary dept $ DOJ DATE9.;
-IF dept ='IT';  *Just the employees of IT departement will be saved;
-* IF Salary > 700;
-LABEL ID = 'Employee ID';
+INPUT  empid empname $ Salary dept $ DOJ DATE9.;
+LABEL empid = 'Employee ID' empname = 'Employee Name' dept = 'Department' DOJ = 'Date of Joining';
 FORMAT DOJ DATE9.;
 DATALINES;
 1 Rick 623.3 IT 02APR2001
@@ -26,13 +25,37 @@ DATALINES;
 9 Rahman 822.5 IT
 ;
 RUN;
+PROC PRINT DATA = empdat LABEL;
+RUN;
 
-
-Data empdat1;
+DATA empdat_1;
 SET empdat;
-IF salary < 600 THEN salary_range = "LOW";
-ELSE IF 600 <= salary <= 700 THEN salary_range = "MEDIUM";
-ELSE IF 700 < salary THEN salary_range = "HIGH";
+IF dept ='IT';  *Just the employees of IT departement will be saved;
+RUN;
+
+Data empdat_2;
+SET empdat;
+LENGTH salary_range $6; *without LENGTH it will take the length of 3 for LOW;
+	IF salary < 600 THEN salary_range = "LOW";
+	ELSE IF 600 <= salary <= 700 THEN salary_range = "MEDIUM";
+	ELSE IF 700 < salary THEN salary_range = "HIGH";
+RUN;
+PROC CONTENTS DATA = empdat_2;
+RUN;
+PROC PRINT DATA = empdat_2;
+RUN;
+
+
+* Difference between IF and WHERE;
+
+Data empdat_3;
+SET empdat;
+WHERE salary <= 700;
+RUN;
+*OR;
+Data empdat_4;
+SET empdat;
+IF salary <= 700;
 RUN;
 
 
@@ -49,9 +72,8 @@ IF age < 80 THEN PUT 'out of range';
 * IF gender CONTAINS 'M' THEN PUT 'Yes';
 RUN;
 
-
 /* So we need to use WHERE Clause instead of IF to get the subsets */
-DATA empdat2;
+DATA empdat_5;
 SET empdat;
 * WHERE salary BETWEEN 600 AND 700;
 * WHERE DOJ IS NULL;
@@ -60,23 +82,19 @@ SET empdat;
 * WHERE empname CONTAINS 'ar';
 RUN;
 
-
 DATA acura;
-SET sashelp.cars(WHERE = (make='Acura'));
+SET sashelp.cars(WHERE = (make = 'Acura'));
 RUN;
-  
 * Or;
 DATA acura;
 SET sashelp.cars;
 IF make = 'Acura';
 RUN;
-
 * Or;
 DATA acura;
 SET sashelp.cars;
 WHERE make = 'Acura';
 RUN;
-
 
 
 DATA _NULL_;
@@ -89,11 +107,11 @@ RUN;
 
 
 DATA _NULL_;
-  status = 'OK'; 
-  type = 3;
-  count = 10;
+status = 'OK'; 
+type = 3;
+count = 10;
   
-IF status='OK' AND type=3 THEN count+1;
+	IF status='OK' AND type=3 THEN count+1;
 PUT (result count) (=);
 PUT 'End';
 RUN;
@@ -102,35 +120,44 @@ RUN;
 DATA _NULL_;
 age = 25;
 gender = 'F';
-IF age<=20 AND (gender='F' or age>20) AND gender='F' THEN out1 = 'Yes';
-   ELSE out1 = 'No';
-PUT out1=;
+	IF age<=20 AND (gender='F' or age>20) AND gender='F' THEN out = 'Yes';
+	ELSE out = 'No';
+PUT out=;
 RUN;
 
 
 DATA _NULL_;
 age = 25;
 gender = 'F';
-IF age<=20 AND gender='F' or age>20 AND gender='F' THEN out1 = 'Yes';
-   ELSE out1='No';
-PUT out1=;
+	IF age<=20 AND gender='F' or age>20 AND gender='F' THEN out = 'Yes';
+	ELSE out='No';
+PUT out=;
 RUN;
 
 
 DATA _NULL_;
 age = 45;
-IF 40 < age <= 50 THEN agegroup=1;
-ELSE IF 50 < age <= 60 THEN agegroup=2;
-ELSE IF age > 60 THEN agegroup=3;
+	IF 40 < age <= 50 THEN agegroup=1;
+	ELSE IF 50 < age <= 60 THEN agegroup=2;
+	ELSE IF age > 60 THEN agegroup=3;
 PUT agegroup=;
 RUN;
 
+DATA AgeG;
+age = 45;
+	IF 40 < age <= 50 THEN agegroup=1;
+	ELSE IF 50 < age <= 60 THEN agegroup=2;
+	ELSE IF age > 60 THEN agegroup=3;
+RUN;
+
+
+*More than one condition;
 
 DATA _NULL_;
 score = 85;
 IF score > 80 THEN DO;
 	PUT SCORE=;
-PUT 'Good job'; 
+	PUT 'Good job'; 
 	PUT 'well done'; 
 END;
 ELSE IF Score <= 80 THEN DO;
@@ -138,7 +165,6 @@ ELSE IF Score <= 80 THEN DO;
 	PUT "Haha it's a Joke!";
 END; 
 RUN;
-
 
 
 
@@ -156,6 +182,9 @@ M 60 68500 M 64 66450
 M 22 95600 M 65 86450
 M 42 42050 F 64 61000
 M 39 85230 M 25 66450
+RUN;
+
+PROC PRINT DATA = test (FIRSTOBS=4 OBS=13);
 RUN;
 
 
@@ -194,8 +223,10 @@ RUN;
 DATA new_test2;
 SET test;
 gendernew = PUT(gender,$gender.);
-agegrp = PUT(age,agegrp.);
+agenew = PUT(age,agegrp.);
 RUN;
+
+
 
 
 * Loops;
@@ -231,6 +262,8 @@ RUN;
 TITLE "Table of SQ & SQRT";
 PROC PRINT DATA = table1 NOOBS;
 RUN;
+
+
 
 DATA CtoF_1;
 	c=1;
@@ -284,16 +317,14 @@ SET profits;
 cumulative_profit = SUM(profit,cumulative_profit);
 RETAIN cumulative_profit;
 RUN;
-
 *Or;
-DATA cumul_profits1;
+DATA cumul_profits2;
 SET profits;
 RETAIN cumulative_profit;
 cumulative_profit = SUM(profit,cumulative_profit);
 RUN;
-
 *Or;
-DATA cumul_profits2;
+DATA cumul_profits3;
 SET profits;
 cum_prof + profit;
 RUN;
@@ -304,13 +335,13 @@ PROC SORT DATA = profits;
 BY profit;
 RUN;
 
-DATA cumul_profits3;
+DATA cumul_profits4;
 SET profits;
 BY profit;
 FIRST_NEW=FIRST.PROFIT;
-*RETAIN com_prof;
-*IF first.profit THEN cum_prof = profit;
-*ELSE cum_prof = cum_prof + profit;
+RETAIN com_prof;
+	IF first.profit THEN cum_prof = profit;
+	ELSE cum_prof = cum_prof + profit;
 RUN;
 
 
@@ -324,23 +355,20 @@ RUN;
 PROC SORT DATA = prdsale_cdn_sofa;
 BY month actual;
 RUN; 
-DATA first_last;
-SET prdsale_cdn_sofa;
-BY month;
- 
-IF first.month = 1 THEN month_order = 'FIRST';
-IF last.month = 1 THEN month_order = 'LAST';
- 
-RUN;
 
 DATA first_last;
 SET prdsale_cdn_sofa;
 BY month;
- 
-IF first.month = 1 THEN month_order = 'FIRST';
+	IF first.month = 1 THEN month_order = 'FIRST';
+	ELSE IF last.month = 1 THEN month_order = 'LAST';
+ RUN;
+
+DATA first_last;
+SET prdsale_cdn_sofa;
+BY month;
+	IF first.month = 1 THEN month_order = 'FIRST';
 	ELSE IF Last.month = 1 THEN month_order = 'LAST';
- 		ELSE month_order = 'OTHER';
- 
+ 	ELSE month_order = 'OTHER';
 RUN;
  
 DATA prdsale_cdn_sofa_noretain;
@@ -349,7 +377,6 @@ BY month;
  
 RETAIN cumulative_actual;
 
-IF first.month THEN cumulative_actual = actual;
+	IF first.month THEN cumulative_actual = actual;
 	ELSE cumulative_actual = cumulative_actual + actual;
- 
 RUN;
