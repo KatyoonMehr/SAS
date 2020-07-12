@@ -16,3 +16,14 @@ OPTIONS YEARCUTOFF = 1920
 
 ## Keep and Drop
 How to use KEEP and DROP statements and KEEP= and DROP= options efficiently.
+
+## Conditions:
+IF - ELSE IF - THEN
+WHERE
+Grouping Observations with IF-THEN DO-END Statements
+DO TO BY   OUTPUT END
+DO WHILE   OUTPUT END
+DO UNTIL   OUTPUT END
+RETAIN (copies retaining values by telling the SAS not to reset the variables 
+		 to missing at the beginning of each iteration of the DATA step)
+First. and Last. Indicators
