@@ -1,6 +1,28 @@
+
+
+* -- PROC MEANS (N NMISS MIN MAX MEAN MEDIAN MODE STD VARIANCE) MAXDEC=
+          VAR  CLASS
+
+* -- PROC SUMMARY 
+          VAR  CLASS  OUTPUT OUT=
+		  N=Number Min=Min Max=Max Mean=Mean STD=Standard_Deviation
+
+* -- PROC UNIVARIATE (NORMAL PLOT FREQ)
+		  HISTOGRAM
+
+* -- PROC FREQ
+          TABLE a * b / MISSING    OUT = 
+
+* -- PROC CORR (PLOTS=SCATTER(NVAR=2))
+	      VAR
+for scatter plot we need to use:
+	ODS GRAPHICS ON
+	ODS GRAPHICS OFF;
+
+
 LIBNAME KatiLib 'C:\Users\Rayan\Desktop\Kati\Data Science\SASFile';
 
-DATA Customers;
+DATA KatiLib.Customers;
 INPUT 	@1 Customer_ID $10.
 		@12 FirstName $25.
 		@39 LastName $20.
@@ -34,18 +56,19 @@ CUST000020 Eric                       Natan                24111979 M C 70000.00
 ;
 RUN;
 
-PROC SORT DATA=Customers OUT=New_Customers;
+PROC SORT DATA=KatiLib.Customers OUT=Customers;
 BY Gender;
 RUN;
 
 PROC FORMAT;
 VALUE $EmpStat C='Client' A='Associate';
+VALUE $GenderGr 'F' = 'Female' 'M' = 'Male';
 RUN;
 
 
-PROC PRINT DATA=NEW_Customers LABEL;
+PROC PRINT DATA=Customers LABEL;
 	TITLE 'List of Customers';
-	FORMAT DOB MMDDYYS10. Employ_Stat $EmpStat.;
+	FORMAT DOB MMDDYYS10. Employ_Stat $EmpStat. gender $GenderGr.;
 	BY Gender;
 RUN;
 
@@ -62,7 +85,7 @@ M 22 25600 M 19 42050 M 19 25230 M 65 66450
 ;
 RUN;
 
-DATA TesTMissing;
+DATA TestMissing;
 INPUT @1 Gender $1. @3Age 2. @5Income;
 DATALINES;
 F 26 23400
@@ -78,7 +101,7 @@ M 42 42050
 M 39 85230 
 M 25 26450
 F 18 23400 
-F 68 95000 
+F 68 .
 F 20 26800 
 F 18 44900 
 F 66 25000 
@@ -86,7 +109,7 @@ M 17 28000
 M 18 27250 
 M 67 68500 
 M 22 25600 
-M 19 42050 
+M 19 .
 M 19 25230 
 M 65 66450
   18 45000 
@@ -95,56 +118,79 @@ F 22 25800
   45 55000
 ;
 RUN;
-
 PROC PRINT DATA=TestMissing;
+BY gender;
 RUN;
 
+
 PROC FORMAT;
-VALUE $Gender 'M'='Male' 'F'='Female';
 VALUE AgeGrp 0-19='<20 Yrs' 20-64='20-64 Yrs' 65-HIGH='>=65 Yrs';
 RUN;
 
 
 PROC PRINT DATA=TestMissing;
-FORMAT Gender $Gender. Age AgeGrp.;
+FORMAT Gender $GenderGr. Age AgeGrp.;
 RUN;
 
-PROC PRINT DATA=Test;
+PROC MEANS DATA=Test MAXDEC=2;
+VAR _NUMERIC_;
 RUN;
 
 PROC MEANS DATA=Test MAXDEC=2;
 VAR Age Income;
 RUN;
+
 
 PROC MEANS DATA=Test MAXDEC=2;
 VAR Income;
 CLASS Age Gender;
-FORMAT Age AgeGrp. Gender $Gender. Income DOLLAR.2;
+FORMAT Age AgeGrp. Gender $GenderGr. Income DOLLAR.2;
 RUN;
 
+
+PROC MEANS DATA=TestMissing MAXDEC=2 N NMISS MIN MAX MEAN MEDIAN STD VARIANCE;
+VAR Income;
+CLASS Age Gender;
+FORMAT Age AgeGrp. Gender $GenderGr. Income DOLLAR.2;
+RUN;
+
+
+PROC MEANS DATA=TestMissing MAXDEC=2 N NMISS MIN MAX MEAN MEDIAN STD VARIANCE;
+VAR Income Age;
+CLASS Gender;
+FORMAT Gender $GenderGr. Income DOLLAR.2;
+RUN;
+
+* With no VAR statement, the table contain only the number of observations;
+PROC SUMMARY DATA=Test;
+OUTPUT OUT = Test_Count;
+RUN;
 
 PROC SUMMARY DATA=Test;
 VAR Age Income;
-OUTPUT OUT=New_Test;
+OUTPUT OUT = Test_Statistics;
 RUN;
-
 
 PROC SUMMARY DATA=Test MAXDEC=2;
 VAR Income;
 CLASS Gender Age;
-FORMAT Age AgeGrp. Gender $Gender.;
-OUTPUT OUT=New_Test1 N=Number;
+FORMAT Age AgeGrp. Gender $GenderGr.;
+OUTPUT OUT=Test_Statistics 
+	N=Number Min=Min Max=Max Mean=Mean STD=Standard_Deviation;
 RUN;
 
-PROC PRINT DATA=New_Test1;
+PROC PRINT DATA = Test_Statistics;
 RUN;
 
 
 PROC UNIVARIATE DATA=Test NORMAL PLOT FREQ;
 VAR Age Income;
-OUTPUT OUT=New_Test2;
+CLASS Gender;
+OUTPUT OUT=Test_Statistics_Graph;
+FORMAT Gender $GenderGr.;
 HISTOGRAM;
 RUN;
+
 
 PROC FREQ DATA=Test;
 TABLE Gender;
@@ -153,23 +199,22 @@ RUN;
 
 
 PROC FREQ DATA=Test;
-TABLE Age*Gender /OUT=New_Test3;
-FORMAT Gender $Gender. Age AgeGrp.;
+TABLE Age*Gender / OUT=New_Table_1;
+FORMAT Gender $GenderGr. Age AgeGrp.;
+RUN;
+PROC PRINT DATA=New_Table_1;
 RUN;
 
 
 PROC FREQ DATA=Test;
-TABLE Gender*Age/missing;
-FORMAT Gender $Gender. Age Agegrp.;
+TABLE Gender*Age / MISSING;
+FORMAT Gender $GenderGr. Age Agegrp.;
 RUN;
 
 
 PROC FREQ DATA=TestMissing;
-TABLE Gender*Age/missing;
-FORMAT Gender $Gender. Age Agegrp.;
-RUN;
-
-PROC PRINT DATA=New_Test3;
+TABLE Gender*Age / MISSING;
+FORMAT Gender $GenderGr. Age Agegrp.;
 RUN;
 
 
@@ -178,128 +223,5 @@ PROC CORR DATA=Test NMISS PLOTS=SCATTER(NVAR=2);
 VAR Age Income;
 RUN;
 ODS GRAPHICS OFF;
-
-
-
-DATA Gardener;
-INFILE 'C:\Users\Administrator\Desktop\KatiSAS\Gardener.txt' DLM=',' FIRSTOBS=2;
-INPUT Name $ Tomatos Zucchinis Peas Grapes;
-Zone = 14;
-Type = 'Home';
-Total1 = Tomatos+Zucchinis+Peas+Grapes;
-Total2 = SUM(Tomatos, Zucchinis, Peas, Grapes);
-PerTom = (Tomatos/Total2)*100;
-RUN;
-PROC PRINT DATA=Gardener;
-RUN;
-
-
-DATA mydata;
-INPUT gender $ age income;
-CARDS;
-F 26 23400
-F 40 45000
-F 25 26800
-F 38 44900
-F 56 65000
-M 23 38000
-M 28 47250
-M 60 68500
-M 22 95600
-M 42 42050
-M 39 85230
-M 25 66450
-;
-RUN;
-
-PROC PRINT DATA = mydata;
-RUN;
-
-*Proc Means;
-PROC MEANS DATA = mydata;
-VAR age income;
-TITLE1 'Mean';
-RUN;
-
-PROC FORMAT;
-     VALUE $gender  'M'='Male' 'F'='Female';
-	 VALUE agegrp 	0 - 19 = "<20 yrs"
-					20 - 40 = "20-40yrs"
-					41 - 64 = "21-64yrs"
-					65 - high = ">=65yrs";
-
-RUN;
-
-PROC MEANS DATA = mydata MAXDEC = 2;
- 	VAR income;
-	CLASS gender age;
-	FORMAT gender $gender. Age agegrp.;
-RUN;
-
-*Proc Summary; 
-*Values in variable _TYPE_ correspond to the different levels of summarization requested in PROC SUMMARY, 
-which depend on the number of variables in the CLASS statement;
-PROC SUMMARY DATA = mydata;
- 	VAR age income;
-	OUTPUT OUT = sumdata;
-RUN;
-
-PROC SUMMARY DATA = mydata MAXDEC = 2;
- 	VAR income;
-	CLASS gender age;
-	FORMAT gender $gender. Age agegrp.;
-	OUTPUT OUT = sumdata N = number MIN = min MEAN = mean STD = stdev SUM = total;
-Run;
-
-* Proc Univariate;
-PROC UNIVARIATE DATA = mydata;
-	VAR age income;
-RUN;
-
-PROC UNIVARIATE DATA = mydata; *normal plot freq;
-	VAR income age;
-	OUTPUT OUT = sumdata
-			n=n min=min
-			mean=mean std=std
-			median=median;
-			HISTOGRAM;
-RUN;
-
-*Proc Frequency;
-PROC FREQ DATA = mydata;
-	TABLE gender;
-	FORMAT gender $gender.;
-RUN;
-
-PROC FREQ DATA = mydata;
- TABLE age / OUT=agefreq;
-RUN;
-
-PROC FREQ DATA = mydata;
-	TABLE gender*age / MISSING;
-	FORMAT gender $gender. Age agegrp.;
-RUN;
-
-
-DATA WineRanking;
-    INPUT company $ type $ score date MMDDYY10.;
-	FORMAT date MMDDYY8.;
-    DATALINES;
-	  Helmes Pinot 56 09/14/2012
-	  Helmes Reisling 38 09/14/2012
-	  Vacca Merlot 91 09/15/2012
-	  Sterling Pinot 65 06/30/2012
-	  Sterling Prosecco 72 06/30/2012
-	;
-RUN;
-PROC PRINT DATA = WineRanking;
-RUN;
-
-
-
-
-
-
-
 
 
