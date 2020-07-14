@@ -44,28 +44,21 @@ RETAIN (copies retaining values by telling the SAS not to reset the variables
 First. and Last. Indicators
 
 ## Statistics:
-PROC MEANS (N NMISS MIN MAX MEAN MEDIAN MODE STD VARIANCE) MAXDEC=
--          VAR  CLASS
+PROC MEANS (N NMISS MIN MAX MEAN MEDIAN MODE STD VARIANCE) MAXDEC=         VAR  CLASS
 	  
 PROC SUMMARY 
--          VAR  CLASS  OUTPUT OUT=
--	  N=Number Min=Min Max=Max Mean=Mean STD=Standard_Deviation
+        VAR  CLASS  OUTPUT OUT=   	  N=Number Min=Min Max=Max Mean=Mean STD=Standard_Deviation
 		  
-PROC UNIVARIATE (NORMAL PLOT FREQ)
--          HISTOGRAM
+PROC UNIVARIATE (NORMAL PLOT FREQ)       HISTOGRAM
 		  
-PROC FREQ
--          TABLE a * b / MISSING    OUT =
+PROC FREQ            TABLE a * b / MISSING    OUT =
 	  
-PROC CORR (PLOTS=SCATTER(NVAR=2))
--           VAR
+PROC CORR (PLOTS=SCATTER(NVAR=2))              VAR
 	      
 for scatter plot we need to use:
--	ODS GRAPHICS ON
--	ODS GRAPHICS OFF;
+ODS GRAPHICS ON
+ODS GRAPHICS OFF;
 	
-PROC ANOVA
--         CLASS
--         MODEL
+PROC ANOVA           CLASS  MODEL
 	 
 MEANS (CLASS Variable) / TUKEY;	
