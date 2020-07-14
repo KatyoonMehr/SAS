@@ -61,4 +61,4 @@ ODS GRAPHICS OFF;
 	
 PROC ANOVA           CLASS  MODEL
 	 
-MEANS (CLASS Variable) / TUKEY;	
+MEANS (CLASS Variable) / TUKEY
