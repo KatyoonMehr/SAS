@@ -131,6 +131,103 @@ PROC PRINT DATA = demo_9;
 RUN;
 
 
+
+DATA scores1;
+LENGTH name $ 12;
+INPUT name $ score1 score2;
+DATALINES;
+Riley 1132 1187
+Henderson 1015 1102
+;
+RUN;
+PROC PRINT DATA = Scores1; 
+RUN;
+
+/* Modified List Input 
+A more flexible version of list input, called modified list input, includes format modifiers.
+The : (colon) format modifier enables you to use list input but also to specify an informat after a variable name, 
+whether character or numeric.
+The ~ (tilde) format modifier enables you to read and retain single quotation marks, double quotation marks, 
+and delimiters within character values. 
+DSD: The following is an example of the : and ~ format modifiers. You must use the DSD option in the INFILE statement. 
+Otherwise, the INPUT statement ignores the ~ format modifier. */
+
+DATA scores2;
+INFILE DATALINES DSD; * DSD stands for delimiter separated data;
+INPUT Name : $9. Score1-Score3 Team ~ $25. Div $;
+DATALINES;
+Smith,12,22,46,"Green Hornets, Atlanta",AAA 
+Mitchel,23,19,25,"High Volts, Portland",AAA 
+Jones,09,17,54,"Vulcans, Las Vegas",AA 
+;
+PROC PRINT; RUN;
+
+
+DATA scores3;
+INFILE DATALINES DELIMITER = ","; 
+INPUT name $ x y z;
+DATALINES;
+ "MM", 2.1,   2.2, 5.91
+ F, 6.85, 3.44, 
+  , 7.56, 6.57, 5.77
+ "XOX", , , 10
+ ;
+PROC PRINT; RUN;
+
+ 
+DATA scores4;
+INFILE DATALINES DSD ; 
+INPUT name $ x y z;
+DATALINES;
+ "MM", 2.1,   2.2, 5.91
+ F, 6.85, 3.44, 
+  , 7.56, 6.57, 5.77
+   "XOX", , , 10
+ ;
+PROC PRINT; RUN;
+
+
+/* Column Input */
+DATA scores5;
+INFILE DATALINES TRUNCOVER;
+INPUT name $ 1-12 score2 17-20 score1 27-30;
+
+CARDS;
+Riley           1132       987
+Henderson       1015      1102
+;
+PROC PRINT; RUN;
+
+
+/* Formatted Input */
+DATA scores6;
+INPUT name $12. +4 score1 comma5. +6 score2 comma5.;
+
+CARDS;
+Riley           1,132      1,187
+Henderson       1,015      1,102
+;
+PROC PRINT; RUN;
+
+
+DATA c;
+INFILE DATALINES;
+INPUT date : ddmmyy10.
+      fname : $20.
+	  sname : $20.
+      x;
+
+CARDS;
+ 19.2.2001 Adam Jones 102.8
+ 12.12.2004 Joan Jones 110.8
+ ;
+ RUN;
+PROC PRINT DATA = c;
+FORMAT date mmddyy10. ;
+RUN;
+
+
+
 * Reading an external file;
 DATA participants; 
 INFILE 'C:\Users\Rayan\Desktop\Kati\Data Science\SASFile\participant.csv' DLM= ',' FIRSTOBS=2;
