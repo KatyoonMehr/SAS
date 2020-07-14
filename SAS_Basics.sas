@@ -99,7 +99,7 @@ RUN;
 
 *Column Input;
 DATA demo_8;
-  INPUT id $1-3
+INPUT id $1-3
 		name $ 5-19
 		gender $21
 		age 23-25;
@@ -117,9 +117,9 @@ RUN;
 *Formatted Input;
 DATA demo_9;
 	INPUT 	@1	id 	$3.
-			@4	name $4.
-			@8 	age  	2.
-			@10 	gender $1.;
+		@4	name $4.
+		@8 	age  	2.
+		@10 	gender $1.;
 DATALINES;
 001Alex30M 
 002Max 45F
@@ -208,23 +208,6 @@ Riley           1,132      1,187
 Henderson       1,015      1,102
 ;
 PROC PRINT; RUN;
-
-
-DATA c;
-INFILE DATALINES;
-INPUT date : ddmmyy10.
-      fname : $20.
-	  sname : $20.
-      x;
-
-CARDS;
- 19.2.2001 Adam Jones 102.8
- 12.12.2004 Joan Jones 110.8
- ;
- RUN;
-PROC PRINT DATA = c;
-FORMAT date mmddyy10. ;
-RUN;
 
 
 
