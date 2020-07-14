@@ -1,3 +1,9 @@
+* -- PROC ANOVA
+         CLASS
+         MODEL
+
+* -- MEANS (CLASS Variable) / TUKEY;
+
 
 TITLE1 'Nitrogen Content of Red Clover Plants'; 
 DATA Clover; 
@@ -25,12 +31,13 @@ RUN;
 MEANS strain / TUKEY;
 RUN;
 
-ods graphics on; 
+
+ODS GRAPHICS ON; 
 PROC ANOVA DATA = Clover;
 CLASS strain; 
 MODEL Nitrogen = Strain; 
 RUN;
-ods graphics off;
+ODS GRAPHICS OFF;
 
 
 TITLE2 'Randomized Complete Block'; 
@@ -52,4 +59,7 @@ MODEL Yield Worth = Block Treatment;
 RUN;
 
 MEANS Treatment / TUKEY; 
+RUN;
+
+MEANS Block / TUKEY; 
 RUN;
