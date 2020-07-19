@@ -77,3 +77,12 @@ WHERE CALCULATED (if the condition is on the calculated variable)
 CASE WHEN THEN WHEN THEN ELSE END (is like IF, ELSE IF and ELSE)*
 
 COALESCE (replaces a missing with a defined value)*/
+
+## SAS Macro
+%LET macro-variable-name = value;
+
+%MACRO macro-name (variable=);
+ macro-text
+%MEND macro-name;
+
+%macro_name (variable = &macro-variable-name);
