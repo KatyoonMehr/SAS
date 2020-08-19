@@ -1,5 +1,4 @@
 
-
 * SAS Basics;
 * Data Entry;
 * Array;
@@ -33,7 +32,7 @@ PROC PRINT DATA = demo_2;
 RUN;
 
 
-DATA demo_3; *Problem-Second record won't be shown;
+DATA demo_3; *Problem-Second record won't be shown (will be fixed by adding @@ after age);
 INPUT id $ height weight gender $ age;
 DATALINES;
 001 68 144 M 23 002
@@ -71,8 +70,8 @@ RUN;
 
 *Informat Statement;
 DATA demo_6;
-    INFORMAT id $3. gender $1. height 1.2;
-	INPUT id $ height weight gender $ age;
+INFORMAT id $3. gender $1. height 1.2;
+INPUT id $ height weight gender $ age;
 DATALINES;
 001 68 144 M 23
 002 78 202 M 34
@@ -83,8 +82,8 @@ RUN;
 
 
 DATA demo_7;
-	INFORMAT id $3.  gender $1.  dob mmddyy8.;
-	INPUT id  gender  dob;
+INFORMAT id $3.  gender $1.  dob mmddyy8.;
+INPUT id  gender  dob;
 DATALINES;
 001 M 12/31/65
 002 F 06/07/66
@@ -99,7 +98,7 @@ RUN;
 
 *Column Input;
 DATA demo_8;
-INPUT id $1-3
+  INPUT id $1-3
 		name $ 5-19
 		gender $21
 		age 23-25;
@@ -117,9 +116,9 @@ RUN;
 *Formatted Input;
 DATA demo_9;
 	INPUT 	@1	id 	$3.
-		@4	name $4.
-		@8 	age  	2.
-		@10 	gender $1.;
+			@4	name $4.
+			@8 	age  	2.
+			@10 	gender $1.;
 DATALINES;
 001Alex30M 
 002Max 45F
@@ -134,7 +133,7 @@ RUN;
 
 DATA scores1;
 LENGTH name $ 12;
-INPUT name $ score1 score2;
+INPUT name score1 score2;
 DATALINES;
 Riley 1132 1187
 Henderson 1015 1102
@@ -208,6 +207,7 @@ Riley           1,132      1,187
 Henderson       1,015      1,102
 ;
 PROC PRINT; RUN;
+
 
 
 
@@ -375,11 +375,11 @@ DATALINES;
 RUN;
 
 
-Data arr_test2;
+DATA arr_test2;
 INPUT x1 - x7;
 ARRAY X(*) X1 - X7;
 DO i = 1 TO DIM(X);
-	IF x(i) = 9 THEN X(i) = .;
+	IF X(i) = 9 THEN X(i) = .;
 END;
 DROP i;
 CARDS;
@@ -395,8 +395,8 @@ RUN;
 DATA arr_test3;
 INPUT x1 - x7;
 ARRAY X X1 - X7;
-DO OVER x;
-	IF x = 9 THEN X = .;
+DO OVER X;
+	IF X = 9 THEN X = .;
 END;
 CARDS;
 1 2 2 1 3 2 1
